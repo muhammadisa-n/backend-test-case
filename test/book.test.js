@@ -4,14 +4,16 @@ const prisma = require("../src/utils/database");
 const { createBooks } = require("../src/utils/test-utils");
 describe("Test suite for books", () => {
   beforeEach(async () => {
-    if (prisma.book.count == 0) {
-      await createBooks();
-    }
+    await createBooks();
   });
+  afterEach(async () => {
+    await prisma.book.deleteMany();
+  });
+
   afterAll(async () => {
     await prisma.$disconnect();
   });
-  test("should fetch all books and show available stock", async () => {
+  it("should fetch all books and show available stock", async () => {
     const res = await request(app).get("/api/books");
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeInstanceOf(Array);

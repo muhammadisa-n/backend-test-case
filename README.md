@@ -30,12 +30,6 @@ npx prisma migrate dev
 npx prisma generate
 ```
 
-- If you want to seeding database
-
-```shell
-npm run seed
-```
-
 - Run Server
 
 ```shell
@@ -46,6 +40,12 @@ Or
 
 ```shell
 npx run dev
+```
+
+- If you want test using swagger, please seeding first use command in below
+
+```shell
+npm run seed
 ```
 
 ## URL

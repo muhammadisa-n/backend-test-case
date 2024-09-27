@@ -9,11 +9,14 @@ describe("Check Members", () => {
       return await createMembers();
     }
   });
+  afterEach(async () => {
+    await prisma.member.deleteMany();
+  });
 
   afterAll(async () => {
     await prisma.$disconnect();
   });
-  test("should return all members with their borrowed book count", async () => {
+  it("should return all members with their borrowed book count", async () => {
     const res = await request(app).get("/api/members");
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeInstanceOf(Array);

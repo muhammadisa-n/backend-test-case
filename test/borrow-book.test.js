@@ -4,26 +4,20 @@ const prisma = require("../src/utils/database");
 const { createBooks, createMembers } = require("../src/utils/test-utils");
 describe("Borrowing Books", () => {
   beforeEach(async () => {
-    if (prisma.book.count == 0) {
-      await createBooks();
-    }
-    if (prisma.member.count == 0) {
-      await createMembers();
-    }
+    await createBooks();
+    await createMembers();
   });
   afterEach(async () => {
     await prisma.borrowing.deleteMany();
     await prisma.book.deleteMany();
     await prisma.member.deleteMany();
-    await createBooks();
-    await createMembers();
   });
 
   afterAll(async () => {
     await prisma.$disconnect();
   });
 
-  test("should allow member to borrow a book if conditions are met", async () => {
+  it("should allow member to borrow a book if conditions are met", async () => {
     const res = await request(app).post("/api/borrowing/borrow").send({
       memberCode: "M001",
       bookCode: "JK-45",
@@ -32,7 +26,7 @@ describe("Borrowing Books", () => {
     expect(res.body.message).toEqual("Book borrowed successfully");
   });
 
-  test("should not allow member to borrow more than 2 books", async () => {
+  it("should not allow member to borrow more than 2 books", async () => {
     await request(app)
       .post("/api/borrowing/borrow")
       .send({ memberCode: "M001", bookCode: "JK-45" });
@@ -49,7 +43,7 @@ describe("Borrowing Books", () => {
     expect(res.body.message).toEqual("Cannot borrow more than 2 books");
   });
 
-  test("should not allow borrowing a book already borrowed by another member", async () => {
+  it("should not allow borrowing a book already borrowed by another member", async () => {
     await request(app)
       .post("/api/borrowing/borrow")
       .send({ memberCode: "M002", bookCode: "JK-45" });
@@ -62,7 +56,7 @@ describe("Borrowing Books", () => {
     expect(res.body.message).toEqual("Book not available");
   });
 
-  test("should not allow member with penalty to borrow a book", async () => {
+  it("should not allow member with penalty to borrow a book", async () => {
     await prisma.member.update({
       where: { code: "M003" },
       data: { penaltyUntil: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) },
