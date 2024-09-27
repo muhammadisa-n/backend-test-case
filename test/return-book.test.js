@@ -4,8 +4,12 @@ const prisma = require("../src/utils/database");
 const { createBooks, createMembers } = require("../src/utils/test-utils");
 describe("Returning Books", () => {
   beforeEach(async () => {
-    await createBooks();
-    await createMembers();
+    if (prisma.book.count == 0) {
+      await createBooks();
+    }
+    if (prisma.book.count == 0) {
+      await createMembers();
+    }
     await prisma.borrowing.create({
       data: {
         memberCode: "M001",
@@ -26,6 +30,8 @@ describe("Returning Books", () => {
     await prisma.borrowing.deleteMany();
     await prisma.book.deleteMany();
     await prisma.member.deleteMany();
+    await createBooks();
+    await createMembers();
   });
   afterAll(async () => {
     await prisma.$disconnect();

@@ -9,9 +9,6 @@ describe("Check Members", () => {
       return await createMembers();
     }
   });
-  afterEach(async () => {
-    await prisma.member.deleteMany();
-  });
 
   afterAll(async () => {
     await prisma.$disconnect();

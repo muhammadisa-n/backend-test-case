@@ -4,12 +4,10 @@ const prisma = require("../src/utils/database");
 const { createBooks } = require("../src/utils/test-utils");
 describe("Test suite for books", () => {
   beforeEach(async () => {
-    await createBooks();
+    if (prisma.book.count == 0) {
+      await createBooks();
+    }
   });
-  afterEach(async () => {
-    await prisma.book.deleteMany();
-  });
-
   afterAll(async () => {
     await prisma.$disconnect();
   });
